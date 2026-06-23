@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kraszino</title>
+    <script src="https://telegram.org"></script>
+    <style>
+        body { font-family: sans-serif; background: #1a1a2e; color: #fff; text-align: center; padding: 15px; margin: 0; }
+        .card { background: #162447; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
+        .balance { font-size: 24px; color: #2ecc71; font-weight: bold; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+        .tab { flex: 1; padding: 12px; background: #223567; border: none; color: #fff; border-radius: 6px; font-weight: bold; font-size: 14px; }
+        .tab.active { background: #e43f5a; }
+        .game { display: none; background: #162447; padding: 20px; border-radius: 12px; }
+        .game.active { display: block; }
+        .btn { background: #e43f5a; color: #fff; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 15px; }
+        .slots { font-size: 45px; margin: 15px 0; background: #0f172a; padding: 10px; border-radius: 8px; letter-spacing: 10px; }
+        input { background: #0f172a; border: 1px solid #334155; color: #fff; padding: 10px; border-radius: 8px; width: 60%; text-align: center; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="user-name">Добро пожаловать в Kraszino!</div>
+        <div class="balance">💰 <span id="bal">1000</span></div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="go('slots', event)">🎰 Слоты</button>
+        <button class="tab" onclick="go('dice', event)">🎲 Кости</button>
+    </div>
+
+    <div id="g-slots" class="game active">
+        <h3>Игровые Автоматы</h3>
+        <input type="number" id="b-slots" value="10">
+        <div class="slots"><span id="s1">🍒</span><span id="s2">🍒</span><span id="s3">🍒</span></div>
+        <button class="btn" onclick="spin()">Крутить</button>
+        <div id="r-slots" style="margin-top:15px; font-weight:bold; min-height:20px;"></div>
+    </div>
+
+    <div id="g-dice" class="game">
+        <h3>Кости (Больше 3)</h3>
+        <input type="number" id="b-dice" value="10">
+        <div style="font-size: 60px; margin: 15px 0;" id="d-val">🎲</div>
+        <button class="btn" onclick="roll()">Бросить кубик</button>
+        <div id="r-dice" style="margin-top:15px; font-weight:bold; min-height:20px;"></div>
+    </div>
+
+    <script>
+        let b = 1000;
+        const items = ['🍒', '🍋', '🍉', '💎', '7️⃣'];
+        
+        if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.expand();
+            if (window.Telegram.WebApp.initDataUnsafe?.user) {
+                document.getElementById('user-name').innerText = 'Игрок: ' + window.Telegram.WebApp.initDataUnsafe.user.first_name;
+            }
+        }
+
+        function go(game, e) {
+            document.querySelectorAll('.game').forEach(g => g.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('g-' + game).classList.add('active');
+            e.target.classList.add('active');
+        }
+
+        function spin() {
+            let bet = parseInt(document.getElementById('b-slots').value);
+            if (bet > b || bet <= 0) return alert('Недостаточно монет!');
+            b -= bet;
+            document.getElementById('bal').innerText = b;
+
+            let r1 = items[Math.floor(Math.random() * items.length)];
+            let r2 = items[Math.floor(Math.random() * items.length)];
+            let r3 = items[Math.floor(Math.random() * items.length)];
+
+            document.getElementById('s1').innerText = r1;
+            document.getElementById('s2').innerText = r2;
+            document.getElementById('s3').innerText = r3;
+
+            let res = document.getElementById('r-slots');
+            if (r1 === r2 && r2 === r3) {
+                b += bet * 5;
+                res.innerHTML = '<span style="color:#2ecc71 font-size:18px">ДЖЕКПОТ! +' + (bet * 5) + '</span>';
+            } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+                b += Math.floor(bet * 1.5);
+                res.innerHTML = '<span style="color:#3498db">Выигрыш! +' + Math.floor(bet * 1.5) + '</span>';
+            } else {
+                res.innerHTML = '<span style="color:#e74c3c">Проигрыш</span>';
+            }
+            document.getElementById('bal').innerText = b;
+        }
+
+        function roll() {
+            let bet = parseInt(document.getElementById('b-dice').value);
+            if (bet > b || bet <= 0) return alert('Недостаточно монет!');
+            b -= bet;
+            document.getElementById('bal').innerText = b;
+
+            let num = Math.floor(Math.random() * 6) + 1;
+            document.getElementById('d-val').innerText = num;
+            let res = document.getElementById('r-dice');
+
+            if (num > 3) {
+                b += bet * 2;
+                res.innerHTML = '<span style="color:#2ecc71; font-size:18px">Победа! +' + (bet * 2) + '</span>';
+            } else {
+                res.innerHTML = '<span style="color:#e74c3c">Проигрыш</span>';
+            }
+            document.getElementById('bal').innerText = b;
+        }
+    </script>
+</body>
+</html>
