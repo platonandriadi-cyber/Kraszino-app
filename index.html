@@ -1,0 +1,90 @@
+// App.jsx
+import React from "react";
+
+const Card = ({ title, subtitle, color }) => (
+  <div
+    style={{
+      background: color,
+      borderRadius: 24,
+      padding: 20,
+      minHeight: 180,
+      color: "#fff",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      boxShadow: "0 0 20px rgba(0,0,0,0.3)",
+    }}
+  >
+    <h2 style={{ margin: 0 }}>{title}</h2>
+    <p style={{ opacity: 0.7 }}>{subtitle}</p>
+  </div>
+);
+
+export default function App() {
+  return (
+    <div
+      style={{
+        background: "#08090c",
+        minHeight: "100vh",
+        padding: 20,
+        fontFamily: "Inter, sans-serif",
+      }}
+    >
+      <h1 style={{ color: "#fff" }}>Ludomanov</h1>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 16,
+        }}
+      >
+        <Card
+          title="Краш"
+          subtitle="Демонстрационный режим"
+          color="linear-gradient(135deg,#0b3b2f,#0f8f66)"
+        />
+
+        <Card
+          title="Слоты"
+          subtitle="UI демонстрация"
+          color="linear-gradient(135deg,#48142d,#a02d61)"
+        />
+
+        <Card
+          title="Кейсы"
+          subtitle="Коллекции предметов"
+          color="linear-gradient(135deg,#3a2500,#b37a00)"
+        />
+
+        <Card
+          title="Дуэль"
+          subtitle="Экран сравнения"
+          color="linear-gradient(135deg,#31235f,#7055ff)"
+        />
+      </div>
+
+      <div
+        style={{
+          position: "fixed",
+          bottom: 20,
+          left: 20,
+          right: 20,
+          height: 70,
+          background: "#11141a",
+          borderRadius: 20,
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "center",
+          color: "#fff",
+        }}
+      >
+        <span>Задания</span>
+        <span>Рефералы</span>
+        <span>Главная</span>
+        <span>Лидерборд</span>
+        <span>Инвентарь</span>
+      </div>
+    </div>
+  );
+}
